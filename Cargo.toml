@@ -3,21 +3,17 @@ name = "mikado"
 version = "0.1.0"
 edition = "2021"
 authors = ["Theo Monnom <theo.8bits@gmail.com>"]
+build = "build/main.rs"
 
 [features]
-async = [] # required for wasm
+dsp = []
 
 [dependencies]
 log = "0.4"
 thiserror = "1"
 bitflags = "2.4.1"
+rustfft = "6.1.0"
 
-[target.'cfg(target_arch = "wasm32")'.dependencies]
-futures = "0.3"
-wasm-bindgen = "0.2"
-wasm-bindgen-futures = "0.4"
-wasm-bindgen-test = "0.3"
-web-sys = { version = "0.3", features = ["Window", "Navigator", "MediaDevices", "Event"] }
-
-[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
-gloo-timers = { version = "0.3", features = ["futures"] }
+[build-dependencies]
+bindgen = "0.66.1"
+cc = "1.0.79"

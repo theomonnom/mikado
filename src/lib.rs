@@ -2,6 +2,7 @@ use bitflags::bitflags;
 use std::borrow::Cow;
 use thiserror::Error;
 
+pub mod audio;
 mod sys;
 
 #[derive(Debug, Error)]
@@ -52,15 +53,15 @@ bitflags! {
     }
 }
 
-pub fn request_permissions(perms: Permissions) -> Result<()> {
+/*pub fn request_permissions(perms: Permissions) -> Result<()> {
     sys::request_permissions()
-}
+}*/
 
-pub fn list_cameras() -> Vec<CameraInfo> {
+pub fn list_cameras() -> Result<Vec<CameraInfo>> {
     sys::list_cameras()
 }
 
-pub fn list_microphones() -> Vec<MicrophoneInfo> {
+/*pub fn list_microphones() -> Vec<MicrophoneInfo> {
     sys::list_microphones()
 }
 
@@ -70,4 +71,4 @@ pub fn list_speakers() -> Vec<SpeakerInfo> {
 
 pub fn list_displays() -> Vec<DisplayInfo> {
     sys::list_displays()
-}
+}*/
