@@ -1,4 +1,4 @@
-#import "AVFoundationBind.h"
+#import "avfoundationbind.h"
 #import <AVFoundation/AVFoundation.h>
 #import <Foundation/Foundation.h>
 #include <stdlib.h>

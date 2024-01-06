@@ -6,7 +6,7 @@ pub fn build() {
     // Build AVFoundation bindings
     {
         let bindings = bindgen::Builder::default()
-            .header("src/sys/avfoundation/AVFoundationBind.h")
+            .header("src/sys/avfoundation/avfoundationbind.h")
             .parse_callbacks(Box::new(bindgen::CargoCallbacks))
             .generate()
             .expect("Unable to generate bindings");
@@ -17,7 +17,7 @@ pub fn build() {
             .expect("Couldn't write bindings!");
 
         cc::Build::new()
-            .file("src/sys/avfoundation/AVFoundationBind.m")
+            .file("src/sys/avfoundation/avfoundationbind.m")
             .include(include_path)
             .compile("avfoundation");
 

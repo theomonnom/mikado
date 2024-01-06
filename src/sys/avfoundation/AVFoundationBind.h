@@ -1,4 +1,8 @@
+#ifndef MIKADO_AVFOUNDATION_H
+#define MIKADO_AVFOUNDATION_H
+
 #include <stdint.h>
+
 #define MAX_DEVICES 16
 #define MAX_DEVICE_UID_CHARS 64
 #define MAX_DEVICE_NAME_CHARS 64
@@ -67,3 +71,5 @@ int close_camera(SessionHandle *handle);
 // Video formats supported by the hardware
 // This doesn't mean that we can't use another format for the capture output
 int supported_video_formats(SessionHandle *handle);
+
+#endif // MIKADO_AVFOUNDATION_H
