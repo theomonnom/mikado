@@ -28,6 +28,8 @@ int new_session(SessionHandle **handle) {
   h->wm_state = None;
   h->window_type = None;
   h->window_type_normal = None;
+
+  *handle = h;
   return 0;
 }
 
