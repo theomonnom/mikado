@@ -2,6 +2,11 @@ use std::env;
 use std::path::PathBuf;
 
 pub fn build() {
+    println!("cargo:rerun-if-changed=src/sys/x11/x11bind.h");
+    println!("cargo:rerun-if-changed=src/sys/x11/x11bind.c");
+    println!("cargo:rerun-if-changed=src/sys/x11/window_utils.c");
+    println!("cargo:rerun-if-changed=src/sys/x11/window_utils.h");
+
     let include_path = PathBuf::from("src/sys/x11");
     // Build X11 bindings
     {

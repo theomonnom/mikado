@@ -28,12 +28,19 @@ int new_session(SessionHandle **handle) {
   h->wm_state = None;
   h->window_type = None;
   h->window_type_normal = None;
+
+  *handle = h;
   return 0;
 }
 
 int free_session(SessionHandle *handle) { return 1; }
 
 int list_screens(SessionHandle *handle, ScreenInfo **screens, int *count) {
+  if (!handle->display) {
+    fprintf(stderr, "No display is not open\n");
+    return 1;
+  }
+
   const int num_screens = XScreenCount(handle->display);
   ScreenInfo *s = (ScreenInfo *)malloc(sizeof(ScreenInfo) * num_screens);
   if (!s) {
@@ -62,13 +69,14 @@ int list_screen_windows(SessionHandle *handle, int screen, WindowInfo **windows,
                         int *count) {
   Screen *s = XScreenOfDisplay(handle->display, screen);
   Window root = XRootWindowOfScreen(s);
+  fprintf(stderr, "Root window: %ld\n", root);
 
   Window parent;
   Window *children;
   unsigned int num_children;
 
-  if (XQueryTree(handle->display, root, &root, &parent, &children,
-                 &num_children) != Success) {
+  if (!XQueryTree(handle->display, root, &root, &parent, &children,
+                  &num_children)) {
     fprintf(stderr, "Failed to query for child windows for screen %d\n",
             screen);
     return 1;
@@ -89,12 +97,15 @@ int list_screen_windows(SessionHandle *handle, int screen, WindowInfo **windows,
     Window app_window =
         get_app_window(handle->display, window, handle->wm_state);
     if (app_window &&
-        is_desktop_window(handle->display, app_window, handle->window_type,
-                          handle->window_type_normal)) {
+        is_desktop_element(handle->display, app_window, handle->window_type,
+                           handle->window_type_normal)) {
       total_windows++;
 
       WindowInfo *info = &infos[total_windows - 1];
+      char *title;
+      get_window_title(handle->display, app_window, &title);
       info->xid = app_window;
+      info->title = title;
     }
   }
 
@@ -106,6 +117,11 @@ int list_screen_windows(SessionHandle *handle, int screen, WindowInfo **windows,
 }
 
 int list_windows(SessionHandle *handle, WindowInfo **windows, int *count) {
+  if (!handle->display) {
+    fprintf(stderr, "No display is not open\n");
+    return 1;
+  }
+
   const int num_screens = XScreenCount(handle->display);
 
   int total_windows = 0;
