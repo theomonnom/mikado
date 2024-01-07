@@ -10,7 +10,7 @@ mod tests {
     use std::mem::MaybeUninit;
 
     #[test]
-    fn test_x11() {
+    fn sys_test_x11() {
         unsafe {
             sys::init_x11();
 

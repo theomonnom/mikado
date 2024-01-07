@@ -97,7 +97,7 @@ int list_screen_windows(SessionHandle *handle, int screen, WindowInfo **windows,
     Window app_window =
         get_app_window(handle->display, window, handle->wm_state);
     if (app_window &&
-        is_desktop_element(handle->display, app_window, handle->window_type,
+        !is_desktop_element(handle->display, app_window, handle->window_type,
                            handle->window_type_normal)) {
       total_windows++;
 
