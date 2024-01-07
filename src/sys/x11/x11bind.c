@@ -69,13 +69,14 @@ int list_screen_windows(SessionHandle *handle, int screen, WindowInfo **windows,
                         int *count) {
   Screen *s = XScreenOfDisplay(handle->display, screen);
   Window root = XRootWindowOfScreen(s);
+  fprintf(stderr, "Root window: %ld\n", root);
 
   Window parent;
   Window *children;
   unsigned int num_children;
 
-  if (XQueryTree(handle->display, root, &root, &parent, &children,
-                 &num_children) != Success) {
+  if (!XQueryTree(handle->display, root, &root, &parent, &children,
+                 &num_children)) {
     fprintf(stderr, "Failed to query for child windows for screen %d\n",
             screen);
     return 1;
