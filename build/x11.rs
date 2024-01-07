@@ -20,5 +20,7 @@ pub fn build() {
             .file("src/sys/x11/x11bind.c")
             .include(include_path)
             .compile("x11");
+
+        println!("cargo:rustc-link-lib=dylib=X11");
     }
 }
