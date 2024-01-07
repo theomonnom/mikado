@@ -22,7 +22,7 @@ typedef struct WindowInfo {
 
 int init_x11(void);
 
-SessionHandle* new_session(SessionHandle **handle);
+int new_session(SessionHandle **handle);
 int free_session(SessionHandle *handle);
 
 int list_displays(void);
