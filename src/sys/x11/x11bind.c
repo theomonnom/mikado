@@ -1,8 +1,8 @@
 #include "x11bind.h"
+#include "window_utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "window_utils.h"
 
 // X11 Docs:
 // https://www.x.org/releases/current/doc/libX11/libX11/libX11.html
@@ -14,10 +14,7 @@ typedef struct SessionHandle {
   Atom window_type_normal;
 } SessionHandle;
 
-int list_displays() {
-  // TODO(theomonnom): Read the /tmp/.X11-unix sockets
-  return 0;
-}
+int init_x11() { return XInitThreads(); }
 
 int new_session(SessionHandle **handle) {
   SessionHandle *h = (SessionHandle *)malloc(sizeof(SessionHandle));
@@ -33,6 +30,8 @@ int new_session(SessionHandle **handle) {
   h->window_type_normal = None;
   return 0;
 }
+
+int free_session(SessionHandle *handle) { return 1; }
 
 int list_screens(SessionHandle *handle, ScreenInfo **screens, int *count) {
   const int num_screens = XScreenCount(handle->display);
@@ -121,12 +120,10 @@ int list_windows(SessionHandle *handle, WindowInfo **windows, int *count) {
 
     if (combined_windows) {
       combined_windows = (WindowInfo *)realloc(
-          combined_windows,
-          sizeof(WindowInfo) * (total_windows + scr_count));
+          combined_windows, sizeof(WindowInfo) * (total_windows + scr_count));
 
     } else {
-      combined_windows =
-          (WindowInfo *)malloc(sizeof(WindowInfo) * scr_count);
+      combined_windows = (WindowInfo *)malloc(sizeof(WindowInfo) * scr_count);
     }
 
     memcpy(combined_windows + total_windows, scr_wins,

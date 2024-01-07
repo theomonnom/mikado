@@ -20,6 +20,8 @@ typedef struct WindowInfo {
   char* title;
 } WindowInfo;
 
+int init_x11(void);
+
 int new_session(SessionHandle **handle);
 int free_session(SessionHandle *handle);
 
