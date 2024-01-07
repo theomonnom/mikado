@@ -1,9 +1,8 @@
 #include "x11bind.h"
-#include "window_utils.h"
-#include <cstdio>
-#include <malloc/_malloc.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "window_utils.h"
 
 // X11 Docs:
 // https://www.x.org/releases/current/doc/libX11/libX11/libX11.html

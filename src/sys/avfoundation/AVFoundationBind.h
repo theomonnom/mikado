@@ -1,8 +1,6 @@
 #ifndef MIKADO_AVFOUNDATION_H
 #define MIKADO_AVFOUNDATION_H
 
-#include <stdint.h>
-
 #define MAX_DEVICES 16
 #define MAX_DEVICE_UID_CHARS 64
 #define MAX_DEVICE_NAME_CHARS 64
@@ -47,17 +45,17 @@ typedef struct BufferDesc {
   FrameFormat format;
   VideoRotation rotation;
   ComponentDesc *components;
-  int32_t components_len;
-  int32_t width;
-  int32_t height;
+  int components_len;
+  int width;
+  int height;
 } BufferDesc;
 
 // Supported formats of a VideoDeviceFormat
 typedef struct VideoDeviceFormat {
   double min_fps;
   double max_fps;
-  int32_t width;
-  int32_t height;
+  int width;
+  int height;
   FrameFormat format;
 } VideoDeviceFormat;
 

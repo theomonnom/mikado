@@ -1,6 +1,6 @@
 use crate::CameraInfo;
 
-include!(concat!(env!("OUT_DIR"), "/avfoundation.rs"));
+//include!(concat!(env!("OUT_DIR"), "/avfoundation.rs"));
 
 pub fn init() -> crate::Result<()> {
     Ok(())

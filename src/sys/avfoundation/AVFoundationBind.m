@@ -148,14 +148,14 @@ int close_camera(SessionHandle *handle) { return NULL; }
 int supported_video_formats(SessionHandle *handle) {
 
   for (AVCaptureDeviceFormat *format in handle->device.formats) {
-    DeviceFormat *deviceFormat;
+    /*DeviceFormat *deviceFormat;
     CMVideoDimensions dimensions =
         CMVideoFormatDescriptionGetDimensions(format.formatDescription);
     FourCharCode code =
         CMFormatDescriptionGetMediaSubType(format.formatDescription);
 
     deviceFormat->width = dimensions.width;
-    deviceFormat->height = dimensions.height;
+    deviceFormat->height = dimensions.height;*/
 
     NSLog(@"Format: %@", format);
   }

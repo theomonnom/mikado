@@ -18,6 +18,8 @@ pub fn build() {
 
         cc::Build::new()
             .file("src/sys/x11/x11bind.c")
+            .file("src/sys/x11/window_utils.c")
+            .std("c99")
             .include(include_path)
             .compile("x11");
 

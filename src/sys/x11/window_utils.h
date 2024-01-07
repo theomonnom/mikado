@@ -2,6 +2,7 @@
 #define MIKADO_X11_WINDOW_UTILS_H
 
 #include <X11/Xlib.h>
+#include <stdbool.h>
 
 typedef struct WindowRect {
   int x;
