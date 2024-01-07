@@ -76,7 +76,7 @@ int list_screen_windows(SessionHandle *handle, int screen, WindowInfo **windows,
   unsigned int num_children;
 
   if (!XQueryTree(handle->display, root, &root, &parent, &children,
-                 &num_children)) {
+                  &num_children)) {
     fprintf(stderr, "Failed to query for child windows for screen %d\n",
             screen);
     return 1;
@@ -98,11 +98,14 @@ int list_screen_windows(SessionHandle *handle, int screen, WindowInfo **windows,
         get_app_window(handle->display, window, handle->wm_state);
     if (app_window &&
         is_desktop_element(handle->display, app_window, handle->window_type,
-                          handle->window_type_normal)) {
+                           handle->window_type_normal)) {
       total_windows++;
 
       WindowInfo *info = &infos[total_windows - 1];
+      char *title;
+      get_window_title(handle->display, app_window, &title);
       info->xid = app_window;
+      info->title = title;
     }
   }
 

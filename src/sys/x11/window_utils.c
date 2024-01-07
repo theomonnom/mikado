@@ -3,6 +3,7 @@
 #include <X11/Xutil.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 bool is_desktop_element(Display *display, Window window, Atom window_type,
                         Atom window_type_normal) {
@@ -121,4 +122,39 @@ int get_window_rect(Display *display, Window window, WindowRect *rect) {
   rect->x += offset_x;
   rect->y += offset_y;
   return 0;
+}
+
+int get_window_title(Display *display, Window window, char **title) {
+  int status;
+  bool nok = 1;
+  XTextProperty window_name;
+  window_name.value = nullptr;
+  if (window) {
+    status = XGetWMName(display, window, &window_name);
+    if (status && window_name.value && window_name.nitems) {
+      int cnt;
+      char **list = nullptr;
+      status = Xutf8TextPropertyToTextList(display, &window_name, &list, &cnt);
+      if (status >= Success && cnt && *list) {
+        if (cnt > 1) {
+          fprintf(stderr,
+                  "Window has %d text properties, only using the first "
+                  "one.\n",
+                  cnt);
+        }
+        char *dst = (char *)malloc(strlen(*list) + 1);
+        strcpy(dst, *list);
+        *title = dst;
+        nok = 0;
+      }
+      if (list) {
+        XFreeStringList(list);
+      }
+    }
+    if (window_name.value) {
+      XFree(window_name.value);
+    }
+  }
+
+  return nok;
 }
