@@ -36,6 +36,11 @@ int new_session(SessionHandle **handle) {
 int free_session(SessionHandle *handle) { return 1; }
 
 int list_screens(SessionHandle *handle, ScreenInfo **screens, int *count) {
+  if (!handle->display) {
+    fprintf(stderr, "No display is not open\n");
+    return 1;
+  }
+
   const int num_screens = XScreenCount(handle->display);
   ScreenInfo *s = (ScreenInfo *)malloc(sizeof(ScreenInfo) * num_screens);
   if (!s) {
@@ -108,6 +113,11 @@ int list_screen_windows(SessionHandle *handle, int screen, WindowInfo **windows,
 }
 
 int list_windows(SessionHandle *handle, WindowInfo **windows, int *count) {
+  if (!handle->display) {
+    fprintf(stderr, "No display is not open\n");
+    return 1;
+  }
+
   const int num_screens = XScreenCount(handle->display);
 
   int total_windows = 0;
