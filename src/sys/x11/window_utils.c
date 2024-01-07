@@ -2,8 +2,8 @@
 #include <X11/Xmd.h>
 #include <X11/Xutil.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 bool is_desktop_element(Display *display, Window window, Atom window_type,
                         Atom window_type_normal) {
@@ -128,7 +128,7 @@ int get_window_title(Display *display, Window window, char **title) {
   int status;
   bool nok = 1;
   XTextProperty window_name;
-  window_name.value = nullptr;
+  window_name.value = NULL;
   if (window) {
     status = XGetWMName(display, window, &window_name);
     if (status && window_name.value && window_name.nitems) {
