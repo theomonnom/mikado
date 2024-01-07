@@ -40,6 +40,19 @@ mod tests {
                 let screen = *screens.add(i as usize);
                 println!("screen: {:?}", screen);
             }
+
+            let mut windows = MaybeUninit::uninit();
+            let mut count = MaybeUninit::uninit();
+            let error = sys::list_windows(session, windows.as_mut_ptr(), count.as_mut_ptr());
+            println!("error: {}", error);
+            let windows = windows.assume_init();
+            let count = count.assume_init();
+
+            for i in 0..count {
+                // dereference display
+                let window = *windows.add(i as usize);
+                println!("window: {:?}", window);
+            }
         }
     }
 }
