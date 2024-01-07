@@ -133,7 +133,7 @@ int get_window_title(Display *display, Window window, char **title) {
     status = XGetWMName(display, window, &window_name);
     if (status && window_name.value && window_name.nitems) {
       int cnt;
-      char **list = nullptr;
+      char **list = NULL;
       status = Xutf8TextPropertyToTextList(display, &window_name, &list, &cnt);
       if (status >= Success && cnt && *list) {
         if (cnt > 1) {
