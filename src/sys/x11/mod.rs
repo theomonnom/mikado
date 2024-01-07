@@ -52,6 +52,9 @@ mod tests {
                 // dereference display
                 let window = *windows.add(i as usize);
                 println!("window: {:?}", window);
+                // Print window name
+                let cstr = std::ffi::CStr::from_ptr(window.title);
+                println!("title: {:?}", cstr);
             }
         }
     }
