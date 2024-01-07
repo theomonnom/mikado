@@ -63,23 +63,17 @@ Window get_app_window(Display *display, Window window, Atom wm_state) {
                                   AnyPropertyType, &actual_type, &actual_format,
                                   &size, &bytes_after, &data);
 
-  if (status != Success) {
-    return WithdrawnState;
+  CARD32 state = WithdrawnState;
+  if (status == Success && size > 0) {
+    state = *(CARD32 *)data;
+    XFree(data);
   }
-
-  CARD32 state = *(CARD32 *)data;
-  XFree(data);
 
   if (state == NormalState) {
     // Window has WM_STATE==NormalState. Return it.
     return window;
   } else if (state == IconicState) {
     // Window is in minimized. Skip it.
-    return 0;
-  }
-
-  if (state != WithdrawnState) {
-    fprintf(stderr, "Window has invalid WM_STATE.\n");
     return 0;
   }
 
@@ -119,8 +113,8 @@ int get_window_rect(Display *display, Window window, WindowRect *rect) {
 
   int offset_x = 0;
   int offset_y = 0;
-  if (!XTranslateCoordinates(display, window, attr.root, rect->x, rect->y, &offset_x,
-			     &offset_y, &window)) {
+  if (!XTranslateCoordinates(display, window, attr.root, rect->x, rect->y,
+                             &offset_x, &offset_y, &window)) {
     fprintf(stderr, "Failed to translate coordinates\n");
     return 1;
   }
