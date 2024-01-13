@@ -18,11 +18,11 @@ Window get_app_window(Display *display, Window window, Atom wm_state);
 
 // Returns true if the `window` is a desktop element.
 bool is_desktop_element(Display *display, Window window, Atom window_type,
-                       Atom window_type_normal);
+                        Atom window_type_normal);
 
-int get_window_rect(Display *display, Window window, WindowRect *rect);
+int get_window_rect(Display *display, Window window, WindowRect *rect,
+                    XWindowAttributes *attrs);
 
 int get_window_title(Display *display, Window window, char **title);
-
 
 #endif // MIKADO_X11_WINDOW_UTILS_H

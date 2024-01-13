@@ -101,20 +101,20 @@ Window get_app_window(Display *display, Window window, Atom wm_state) {
   return app_window;
 }
 
-int get_window_rect(Display *display, Window window, WindowRect *rect) {
-  XWindowAttributes attr;
-  if (!XGetWindowAttributes(display, window, &attr)) {
+int get_window_rect(Display *display, Window window, WindowRect *rect,
+                    XWindowAttributes *attr) {
+  if (!XGetWindowAttributes(display, window, attr)) {
     fprintf(stderr, "Failed to get window attributes\n");
     return 1;
   }
-  rect->x = attr.x;
-  rect->y = attr.y;
-  rect->width = attr.width;
-  rect->height = attr.height;
+  rect->x = attr->x;
+  rect->y = attr->y;
+  rect->width = attr->width;
+  rect->height = attr->height;
 
   int offset_x = 0;
   int offset_y = 0;
-  if (!XTranslateCoordinates(display, window, attr.root, rect->x, rect->y,
+  if (!XTranslateCoordinates(display, window, attr->root, rect->x, rect->y,
                              &offset_x, &offset_y, &window)) {
     fprintf(stderr, "Failed to translate coordinates\n");
     return 1;

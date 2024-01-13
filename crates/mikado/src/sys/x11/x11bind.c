@@ -98,7 +98,7 @@ int list_screen_windows(SessionHandle *handle, int screen, WindowInfo **windows,
         get_app_window(handle->display, window, handle->wm_state);
     if (app_window &&
         !is_desktop_element(handle->display, app_window, handle->window_type,
-                           handle->window_type_normal)) {
+                            handle->window_type_normal)) {
       total_windows++;
 
       WindowInfo *info = &infos[total_windows - 1];
@@ -179,4 +179,3 @@ int close_display(SessionHandle *handle) {
   return 0;
 }
 
-void bind_free(void *ptr) { free(ptr); }
