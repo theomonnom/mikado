@@ -57,15 +57,15 @@ macro_rules! x420_to_rgba {
     };
 }
 
-x420_to_rgba!(i420_to_rgba, I420ToRGBA);
-x420_to_rgba!(i420_to_abgr, I420ToABGR);
-x420_to_rgba!(i420_to_bgra, I420ToBGRA);
-x420_to_rgba!(j420_to_argb, J420ToARGB);
-x420_to_rgba!(j420_to_abgr, J420ToABGR);
-x420_to_rgba!(h420_to_argb, H420ToARGB);
-x420_to_rgba!(h420_to_abgr, H420ToABGR);
-x420_to_rgba!(u420_to_argb, U420ToARGB);
-x420_to_rgba!(u420_to_abgr, U420ToABGR);
+x420_to_rgba!(i420_to_rgba, rs_I420ToRGBA);
+x420_to_rgba!(i420_to_abgr, rs_I420ToABGR);
+x420_to_rgba!(i420_to_bgra, rs_I420ToBGRA);
+x420_to_rgba!(j420_to_argb, rs_J420ToARGB);
+x420_to_rgba!(j420_to_abgr, rs_J420ToABGR);
+x420_to_rgba!(h420_to_argb, rs_H420ToARGB);
+x420_to_rgba!(h420_to_abgr, rs_H420ToABGR);
+x420_to_rgba!(u420_to_argb, rs_U420ToARGB);
+x420_to_rgba!(u420_to_abgr, rs_U420ToABGR);
 
 macro_rules! rgba_to_rgba {
     ($rust_fnc:ident, $yuv_sys_fnc:ident) => {
@@ -94,10 +94,10 @@ macro_rules! rgba_to_rgba {
     };
 }
 
-rgba_to_rgba!(abgr_to_argb, ABGRToARGB);
-rgba_to_rgba!(argb_to_abgr, ARGBToABGR);
-rgba_to_rgba!(rgba_to_argb, RGBAToARGB);
-rgba_to_rgba!(bgra_to_argb, BGRAToARGB);
+rgba_to_rgba!(abgr_to_argb, rs_ABGRToARGB);
+rgba_to_rgba!(argb_to_abgr, rs_ARGBToABGR);
+rgba_to_rgba!(rgba_to_argb, rs_RGBAToARGB);
+rgba_to_rgba!(bgra_to_argb, rs_BGRAToARGB);
 
 macro_rules! rgba_to_420 {
     ($rust_fnc:ident, $yuv_sys_fnc:ident) => {
@@ -143,10 +143,10 @@ macro_rules! rgba_to_420 {
     };
 }
 
-rgba_to_420!(rgba_to_i420, RGBAToI420);
-rgba_to_420!(bgra_to_i420, BGRAToI420);
-rgba_to_420!(argb_to_i420, ARGBToI420);
-rgba_to_420!(abgr_to_i420, ABGRToI420);
+rgba_to_420!(rgba_to_i420, rs_RGBAToI420);
+rgba_to_420!(bgra_to_i420, rs_BGRAToI420);
+rgba_to_420!(argb_to_i420, rs_ARGBToI420);
+rgba_to_420!(abgr_to_i420, rs_ABGRToI420);
 
 pub fn raw_to_argb() {} // Should this be named rgb24 instead of RAW
 
