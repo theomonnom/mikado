@@ -14,13 +14,13 @@ macro_rules! x420_to_rgba {
             width: u32,
             height: u32,
             flip_y: bool,
-        ) -> bool {
+        ) {
             assert::valid_420(src_y, stride_y, src_u, stride_u, src_v, stride_v, width, height);
             assert::valid_rgba(dst_rgba, dst_stride_rgba, width, height);
 
             let height = height as i32 * if flip_y { -1 } else { 1 };
 
-            unsafe {
+            assert!(unsafe {
                 yuv_sys::$yuv_sys_fnc(
                     src_y.as_ptr(),
                     stride_y as i32,
@@ -33,7 +33,7 @@ macro_rules! x420_to_rgba {
                     width as i32,
                     height,
                 ) == 0
-            }
+            });
         }
     };
 }
@@ -58,13 +58,13 @@ macro_rules! rgba_to_rgba {
             width: u32,
             height: u32,
             flip_y: bool,
-        ) -> bool {
+        ) {
             assert::valid_rgba(src_abgr, src_stride_abgr, width, height);
             assert::valid_rgba(dst_argb, dst_stride_argb, width, height);
 
             let height = height as i32 * if flip_y { -1 } else { 1 };
 
-            unsafe {
+            assert!(unsafe {
                 yuv_sys::$yuv_sys_fnc(
                     src_abgr.as_ptr(),
                     src_stride_abgr as i32,
@@ -73,7 +73,7 @@ macro_rules! rgba_to_rgba {
                     width as i32,
                     height,
                 ) == 0
-            }
+            });
         }
     };
 }
@@ -97,7 +97,7 @@ macro_rules! rgba_to_420 {
             width: u32,
             height: u32,
             flip_y: bool,
-        ) -> bool {
+        ) {
             assert::valid_rgba(src_rgba, src_stride_rgba, width, height);
             assert::valid_420(
                 dst_y,
@@ -112,7 +112,7 @@ macro_rules! rgba_to_420 {
 
             let height = height as i32 * if flip_y { -1 } else { 1 };
 
-            unsafe {
+            assert!(unsafe {
                 yuv_sys::$yuv_sys_fnc(
                     src_rgba.as_ptr(),
                     src_stride_rgba as i32,
@@ -125,7 +125,7 @@ macro_rules! rgba_to_420 {
                     width as i32,
                     height,
                 ) == 0
-            }
+            });
         }
     };
 }
@@ -151,13 +151,13 @@ pub fn i422_to_i420(
     width: u32,
     height: u32,
     flip_y: bool,
-) -> bool {
+) {
     assert::valid_422(src_y, src_stride_y, src_u, src_stride_u, src_v, src_stride_v, width, height);
     assert::valid_420(dst_y, dst_stride_y, dst_u, dst_stride_u, dst_v, dst_stride_v, width, height);
 
     let height = height as i32 * if flip_y { -1 } else { 1 };
 
-    unsafe {
+    assert!(unsafe {
         yuv_sys::rs_I422ToI420(
             src_y.as_ptr(),
             src_stride_y as i32,
@@ -174,7 +174,7 @@ pub fn i422_to_i420(
             width as i32,
             height,
         ) == 0
-    }
+    });
 }
 
 pub fn i444_to_i420(
@@ -193,13 +193,13 @@ pub fn i444_to_i420(
     width: u32,
     height: u32,
     flip_y: bool,
-) -> bool {
+) {
     assert::valid_444(src_y, src_stride_y, src_u, src_stride_u, src_v, src_stride_v, width, height);
     assert::valid_420(dst_y, dst_stride_y, dst_u, dst_stride_u, dst_v, dst_stride_v, width, height);
 
     let height = height as i32 * if flip_y { -1 } else { 1 };
 
-    unsafe {
+    assert!(unsafe {
         yuv_sys::rs_I444ToI420(
             src_y.as_ptr(),
             src_stride_y as i32,
@@ -216,7 +216,7 @@ pub fn i444_to_i420(
             width as i32,
             height,
         ) == 0
-    }
+    });
 }
 
 pub fn i010_to_i420(
@@ -235,13 +235,13 @@ pub fn i010_to_i420(
     width: u32,
     height: u32,
     flip_y: bool,
-) -> bool {
+) {
     assert::valid_010(src_y, src_stride_y, src_u, src_stride_u, src_v, src_stride_v, width, height);
     assert::valid_420(dst_y, dst_stride_y, dst_u, dst_stride_u, dst_v, dst_stride_v, width, height);
 
     let height = height as i32 * if flip_y { -1 } else { 1 };
 
-    unsafe {
+    assert!(unsafe {
         yuv_sys::rs_I010ToI420(
             src_y.as_ptr(),
             src_stride_y as i32,
@@ -258,7 +258,7 @@ pub fn i010_to_i420(
             width as i32,
             height,
         ) == 0
-    }
+    });
 }
 
 pub fn nv12_to_i420(
@@ -275,13 +275,13 @@ pub fn nv12_to_i420(
     width: u32,
     height: u32,
     flip_y: bool,
-) -> bool {
+) {
     assert::valid_nv12(src_y, src_stride_y, src_uv, src_stride_uv, width, height);
     assert::valid_420(dst_y, dst_stride_y, dst_u, dst_stride_u, dst_v, dst_stride_v, width, height);
 
     let height = height as i32 * if flip_y { -1 } else { 1 };
 
-    unsafe {
+    assert!(unsafe {
         yuv_sys::rs_NV12ToI420(
             src_y.as_ptr(),
             src_stride_y as i32,
@@ -296,7 +296,7 @@ pub fn nv12_to_i420(
             width as i32,
             height,
         ) == 0
-    }
+    });
 }
 
 pub fn i422_to_raw(
@@ -311,13 +311,13 @@ pub fn i422_to_raw(
     width: u32,
     height: u32,
     flip_y: bool,
-) -> bool {
+) {
     assert::valid_422(src_y, src_stride_y, src_u, src_stride_u, src_v, src_stride_v, width, height);
     assert::valid_rgb(dst_raw, dst_stride_raw, width, height);
 
     let height = height as i32 * if flip_y { -1 } else { 1 };
 
-    unsafe {
+    assert!(unsafe {
         yuv_sys::rs_I422ToRAW(
             src_y.as_ptr(),
             src_stride_y as i32,
@@ -330,7 +330,7 @@ pub fn i422_to_raw(
             width as i32,
             height,
         ) == 0
-    }
+    });
 }
 
 pub fn i422_to_rgb24(
@@ -345,13 +345,13 @@ pub fn i422_to_rgb24(
     width: u32,
     height: u32,
     flip_y: bool,
-) -> bool {
+) {
     assert::valid_422(src_y, src_stride_y, src_u, src_stride_u, src_v, src_stride_v, width, height);
     assert::valid_rgb(dst_rgb24, dst_stride_rgb24, width, height);
 
     let height = height as i32 * if flip_y { -1 } else { 1 };
 
-    unsafe {
+    assert!(unsafe {
         yuv_sys::rs_I422ToRGB24(
             src_y.as_ptr(),
             src_stride_y as i32,
@@ -364,7 +364,7 @@ pub fn i422_to_rgb24(
             width as i32,
             height,
         ) == 0
-    }
+    });
 }
 
 macro_rules! x422_to_rgba {
@@ -381,7 +381,7 @@ macro_rules! x422_to_rgba {
             width: u32,
             height: u32,
             flip_y: bool,
-        ) -> bool {
+        ) {
             assert::valid_422(
                 src_y,
                 src_stride_y,
@@ -396,7 +396,7 @@ macro_rules! x422_to_rgba {
 
             let height = height as i32 * if flip_y { -1 } else { 1 };
 
-            unsafe {
+            assert!(unsafe {
                 yuv_sys::$yuv_sys_fnc(
                     src_y.as_ptr(),
                     src_stride_y as i32,
@@ -409,7 +409,7 @@ macro_rules! x422_to_rgba {
                     width as i32,
                     height,
                 ) == 0
-            }
+            });
         }
     };
 }
@@ -431,13 +431,13 @@ pub fn i444_to_raw(
     width: u32,
     height: u32,
     flip_y: bool,
-) -> bool {
+) {
     assert::valid_444(src_y, src_stride_y, src_u, src_stride_u, src_v, src_stride_v, width, height);
     assert::valid_rgb(dst_raw, dst_stride_raw, width, height);
 
     let height = height as i32 * if flip_y { -1 } else { 1 };
 
-    unsafe {
+    assert!(unsafe {
         yuv_sys::rs_I444ToRAW(
             src_y.as_ptr(),
             src_stride_y as i32,
@@ -450,7 +450,7 @@ pub fn i444_to_raw(
             width as i32,
             height,
         ) == 0
-    }
+    });
 }
 
 pub fn i444_to_rgb24(
@@ -465,13 +465,13 @@ pub fn i444_to_rgb24(
     width: u32,
     height: u32,
     flip_y: bool,
-) -> bool {
+) {
     assert::valid_444(src_y, src_stride_y, src_u, src_stride_u, src_v, src_stride_v, width, height);
     assert::valid_rgb(dst_rgb24, dst_stride_rgb24, width, height);
 
     let height = height as i32 * if flip_y { -1 } else { 1 };
 
-    unsafe {
+    assert!(unsafe {
         yuv_sys::rs_I444ToRGB24(
             src_y.as_ptr(),
             src_stride_y as i32,
@@ -484,7 +484,7 @@ pub fn i444_to_rgb24(
             width as i32,
             height,
         ) == 0
-    }
+    });
 }
 
 macro_rules! x444_to_rgba {
@@ -501,7 +501,7 @@ macro_rules! x444_to_rgba {
             width: u32,
             height: u32,
             flip_y: bool,
-        ) -> bool {
+        ) {
             assert::valid_444(
                 src_y,
                 src_stride_y,
@@ -516,7 +516,7 @@ macro_rules! x444_to_rgba {
 
             let height = height as i32 * if flip_y { -1 } else { 1 };
 
-            unsafe {
+            assert!(unsafe {
                 yuv_sys::$yuv_sys_fnc(
                     src_y.as_ptr(),
                     src_stride_y as i32,
@@ -529,7 +529,7 @@ macro_rules! x444_to_rgba {
                     width as i32,
                     height,
                 ) == 0
-            }
+            });
         }
     };
 }
@@ -551,7 +551,7 @@ macro_rules! x010_to_rgba {
             width: u32,
             height: u32,
             flip_y: bool,
-        ) -> bool {
+        ) {
             assert::valid_010(
                 src_y,
                 src_stride_y,
@@ -566,7 +566,7 @@ macro_rules! x010_to_rgba {
 
             let height = height as i32 * if flip_y { -1 } else { 1 };
 
-            unsafe {
+            assert!(unsafe {
                 yuv_sys::$yuv_sys_fnc(
                     src_y.as_ptr(),
                     src_stride_y as i32,
@@ -579,7 +579,7 @@ macro_rules! x010_to_rgba {
                     width as i32,
                     height,
                 ) == 0
-            }
+            });
         }
     };
 }
@@ -597,13 +597,13 @@ pub fn nv12_to_raw(
     width: u32,
     height: u32,
     flip_y: bool,
-) -> bool {
+) {
     assert::valid_nv12(src_y, src_stride_y, src_uv, src_stride_uv, width, height);
     assert::valid_rgb(dst_raw, dst_stride_raw, width, height);
 
     let height = height as i32 * if flip_y { -1 } else { 1 };
 
-    unsafe {
+    assert!(unsafe {
         yuv_sys::rs_NV12ToRAW(
             src_y.as_ptr(),
             src_stride_y as i32,
@@ -614,7 +614,7 @@ pub fn nv12_to_raw(
             width as i32,
             height,
         ) == 0
-    }
+    });
 }
 
 pub fn nv12_to_rgb24(
@@ -627,13 +627,13 @@ pub fn nv12_to_rgb24(
     width: u32,
     height: u32,
     flip_y: bool,
-) -> bool {
+) {
     assert::valid_nv12(src_y, src_stride_y, src_uv, src_stride_uv, width, height);
     assert::valid_rgb(dst_rgb24, dst_stride_rgb24, width, height);
 
     let height = height as i32 * if flip_y { -1 } else { 1 };
 
-    unsafe {
+    assert!(unsafe {
         yuv_sys::rs_NV12ToRGB24(
             src_y.as_ptr(),
             src_stride_y as i32,
@@ -644,7 +644,7 @@ pub fn nv12_to_rgb24(
             width as i32,
             height,
         ) == 0
-    }
+    });
 }
 
 macro_rules! nv12_to_rgba {
@@ -659,13 +659,13 @@ macro_rules! nv12_to_rgba {
             width: u32,
             height: u32,
             flip_y: bool,
-        ) -> bool {
+        ) {
             assert::valid_nv12(src_y, src_stride_y, src_uv, src_stride_uv, width, height);
             assert::valid_rgba(dst_rgba, dst_stride_rgba, width, height);
 
             let height = height as i32 * if flip_y { -1 } else { 1 };
 
-            unsafe {
+            assert!(unsafe {
                 yuv_sys::$yuv_sys_fnc(
                     src_y.as_ptr(),
                     src_stride_y as i32,
@@ -676,10 +676,40 @@ macro_rules! nv12_to_rgba {
                     width as i32,
                     height,
                 ) == 0
-            }
+            });
         }
     };
 }
 
 nv12_to_rgba!(nv12_to_abgr, rs_NV12ToABGR);
 nv12_to_rgba!(nv12_to_argb, rs_NV12ToARGB);
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_data() {
+        const WIDTH: usize = 160;
+        const HEIGHT: usize = 90;
+
+        let dst_abgr = &mut [0u8; WIDTH * HEIGHT * 4];
+        let src_y = &[0u8; WIDTH * HEIGHT];
+        let src_u = &[0u8; WIDTH * HEIGHT + 1 / 2];
+        let src_v = &[0u8; WIDTH * HEIGHT + 1 / 2];
+
+        i420_to_abgr(
+            src_y,
+            WIDTH as u32,
+            src_u,
+            WIDTH as u32 + 1 / 2,
+            src_v,
+            WIDTH as u32 + 1 / 2,
+            dst_abgr,
+            WIDTH as u32 * 4,
+            WIDTH as u32,
+            HEIGHT as u32,
+            false,
+        );
+    }
+}
