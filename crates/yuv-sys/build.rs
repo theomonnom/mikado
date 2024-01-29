@@ -1,19 +1,20 @@
 use cc;
-use std::fs;
-use std::process::ExitStatus;
-use std::{env, path::PathBuf, process::Command};
+use regex::Regex;
+use std::path::Path;
+use std::{env, path::PathBuf};
+use std::{fs, io};
 
-const LIBYUV_REPO: &str = "https://chromium.googlesource.com/libyuv/libyuv";
-const LIBYUV_COMMIT: &str = "af6ac82";
+//const LIBYUV_REPO: &str = "https://chromium.googlesource.com/libyuv/libyuv";
+//const LIBYUV_COMMIT: &str = "af6ac82";
 const FNC_PREFIX: &str = "rs_";
 
-fn run_git_cmd(current_dir: &PathBuf, args: &[&str]) -> ExitStatus {
+/*fn run_git_cmd(current_dir: &PathBuf, args: &[&str]) -> ExitStatus {
     Command::new("git")
         .current_dir(current_dir)
         .args(args)
         .status()
         .unwrap()
-}
+}*/
 
 fn rename_symbols(
     fnc_list: &[&str],
@@ -28,29 +29,37 @@ fn rename_symbols(
             continue;
         }
 
+        let re = Regex::new(&format!(r"\b{}\b", fnc)).unwrap();
         let new_name = format!("{}{}", FNC_PREFIX, fnc);
-        for file in include_files {
-            let path = file.path();
-            let content = fs::read_to_string(&path).unwrap();
-            let new_content = content.replace(fnc, &new_name);
-            fs::write(&path, new_content).unwrap();
-        }
 
-        for file in source_files {
+        for file in include_files.iter().chain(source_files) {
             let path = file.path();
             let content = fs::read_to_string(&path).unwrap();
-            let new_content = content.replace(fnc, &new_name);
-            fs::write(&path, new_content).unwrap();
+            let new_content = re.replace_all(&content, &new_name);
+            fs::write(&path, new_content.to_string()).unwrap();
         }
     }
 }
 
-fn clone_if_needed(output_dir: &PathBuf, libyuv_dir: &PathBuf) -> bool {
+fn copy_dir(source: impl AsRef<Path>, destination: impl AsRef<Path>) -> io::Result<()> {
+    fs::create_dir_all(&destination)?;
+    for entry in fs::read_dir(source)? {
+        let entry = entry?;
+        if entry.file_type()?.is_dir() {
+            copy_dir(entry.path(), destination.as_ref().join(entry.file_name()))?;
+        } else {
+            fs::copy(entry.path(), destination.as_ref().join(entry.file_name()))?;
+        }
+    }
+    Ok(())
+}
+
+fn clone_if_needed(_output_dir: &PathBuf, libyuv_dir: &PathBuf) -> bool {
     if libyuv_dir.exists() {
         return false; // Already cloned
     }
 
-    let status = run_git_cmd(output_dir, &["clone", LIBYUV_REPO]);
+    /*let status = run_git_cmd(output_dir, &["clone", LIBYUV_REPO]);
     if !status.success() {
         fs::remove_dir_all(&libyuv_dir).unwrap();
         panic!("failed to clone libyuv, is git installed?");
@@ -60,6 +69,11 @@ fn clone_if_needed(output_dir: &PathBuf, libyuv_dir: &PathBuf) -> bool {
     if !status.success() {
         fs::remove_dir_all(&libyuv_dir).unwrap();
         panic!("failed to checkout to {}", LIBYUV_COMMIT);
+    }*/
+
+    if let Err(err) = copy_dir("libyuv", libyuv_dir) {
+        fs::remove_dir_all(&libyuv_dir).unwrap();
+        panic!("failed to copy libyuv: {:?}", err);
     }
 
     true
