@@ -41,12 +41,81 @@ macro_rules! x420_to_rgba {
 x420_to_rgba!(i420_to_rgba, rs_I420ToRGBA);
 x420_to_rgba!(i420_to_abgr, rs_I420ToABGR);
 x420_to_rgba!(i420_to_bgra, rs_I420ToBGRA);
+x420_to_rgba!(i420_to_argb, rs_I420ToARGB);
 x420_to_rgba!(j420_to_argb, rs_J420ToARGB);
 x420_to_rgba!(j420_to_abgr, rs_J420ToABGR);
 x420_to_rgba!(h420_to_argb, rs_H420ToARGB);
 x420_to_rgba!(h420_to_abgr, rs_H420ToABGR);
 x420_to_rgba!(u420_to_argb, rs_U420ToARGB);
 x420_to_rgba!(u420_to_abgr, rs_U420ToABGR);
+
+pub fn i420_to_rgb24(
+    src_y: &[u8],
+    src_stride_y: u32,
+    src_u: &[u8],
+    src_stride_u: u32,
+    src_v: &[u8],
+    src_stride_v: u32,
+    dst_rgb24: &mut [u8],
+    dst_stride_rgb24: u32,
+    width: u32,
+    height: u32,
+    flip_y: bool,
+) {
+    assert::valid_420(src_y, src_stride_y, src_u, src_stride_u, src_v, src_stride_v, width, height);
+    assert::valid_rgb(dst_rgb24, dst_stride_rgb24, width, height);
+
+    let height = height as i32 * if flip_y { -1 } else { 1 };
+
+    assert!(unsafe {
+        yuv_sys::rs_I420ToRGB24(
+            src_y.as_ptr(),
+            src_stride_y as i32,
+            src_u.as_ptr(),
+            src_stride_u as i32,
+            src_v.as_ptr(),
+            src_stride_v as i32,
+            dst_rgb24.as_mut_ptr(),
+            dst_stride_rgb24 as i32,
+            width as i32,
+            height,
+        ) == 0
+    });
+}
+
+pub fn i420_to_raw(
+    src_y: &[u8],
+    src_stride_y: u32,
+    src_u: &[u8],
+    src_stride_u: u32,
+    src_v: &[u8],
+    src_stride_v: u32,
+    dst_raw: &mut [u8],
+    dst_stride_raw: u32,
+    width: u32,
+    height: u32,
+    flip_y: bool,
+) {
+    assert::valid_420(src_y, src_stride_y, src_u, src_stride_u, src_v, src_stride_v, width, height);
+    assert::valid_rgb(dst_raw, dst_stride_raw, width, height);
+
+    let height = height as i32 * if flip_y { -1 } else { 1 };
+
+    assert!(unsafe {
+        yuv_sys::rs_I420ToRAW(
+            src_y.as_ptr(),
+            src_stride_y as i32,
+            src_u.as_ptr(),
+            src_stride_u as i32,
+            src_v.as_ptr(),
+            src_stride_v as i32,
+            dst_raw.as_mut_ptr(),
+            dst_stride_raw as i32,
+            width as i32,
+            height,
+        ) == 0
+    });
+}
 
 macro_rules! rgba_to_rgba {
     ($rust_fnc:ident, $yuv_sys_fnc:ident) => {
@@ -683,6 +752,289 @@ macro_rules! nv12_to_rgba {
 
 nv12_to_rgba!(nv12_to_abgr, rs_NV12ToABGR);
 nv12_to_rgba!(nv12_to_argb, rs_NV12ToARGB);
+
+pub fn i420_copy(
+    src_y: &[u8],
+    src_stride_y: u32,
+    src_u: &[u8],
+    src_stride_u: u32,
+    src_v: &[u8],
+    src_stride_v: u32,
+    dst_y: &mut [u8],
+    dst_stride_y: u32,
+    dst_u: &mut [u8],
+    dst_stride_u: u32,
+    dst_v: &mut [u8],
+    dst_stride_v: u32,
+    width: u32,
+    height: u32,
+    flip_y: bool,
+) {
+    assert::valid_420(src_y, src_stride_y, src_u, src_stride_u, src_v, src_stride_v, width, height);
+    assert::valid_420(dst_y, dst_stride_y, dst_u, dst_stride_u, dst_v, dst_stride_v, width, height);
+
+    let height = height as i32 * if flip_y { -1 } else { 1 };
+
+    assert!(unsafe {
+        yuv_sys::rs_I420Copy(
+            src_y.as_ptr(),
+            src_stride_y as i32,
+            src_u.as_ptr(),
+            src_stride_u as i32,
+            src_v.as_ptr(),
+            src_stride_v as i32,
+            dst_y.as_mut_ptr(),
+            dst_stride_y as i32,
+            dst_u.as_mut_ptr(),
+            dst_stride_u as i32,
+            dst_v.as_mut_ptr(),
+            dst_stride_v as i32,
+            width as i32,
+            height,
+        ) == 0
+    });
+}
+
+pub fn i420a_copy(
+    src_y: &[u8],
+    src_stride_y: u32,
+    src_u: &[u8],
+    src_stride_u: u32,
+    src_v: &[u8],
+    src_stride_v: u32,
+    src_a: &[u8],
+    src_stride_a: u32,
+    dst_y: &mut [u8],
+    dst_stride_y: u32,
+    dst_u: &mut [u8],
+    dst_stride_u: u32,
+    dst_v: &mut [u8],
+    dst_stride_v: u32,
+    dst_a: &mut [u8],
+    dst_stride_a: u32,
+    width: u32,
+    height: u32,
+    flip_y: bool,
+) {
+    assert::valid_420a(
+        src_y,
+        src_stride_y,
+        src_u,
+        src_stride_u,
+        src_v,
+        src_stride_v,
+        src_a,
+        src_stride_a,
+        width,
+        height,
+    );
+
+    assert::valid_420a(
+        dst_y,
+        dst_stride_y,
+        dst_u,
+        dst_stride_u,
+        dst_v,
+        dst_stride_v,
+        dst_a,
+        dst_stride_a,
+        width,
+        height,
+    );
+
+    i420_copy(
+        src_y,
+        src_stride_y,
+        src_u,
+        src_stride_u,
+        src_v,
+        src_stride_v,
+        dst_y,
+        dst_stride_y,
+        dst_u,
+        dst_stride_u,
+        dst_v,
+        dst_stride_v,
+        width,
+        height,
+        flip_y,
+    );
+
+    let height = height as i32 * if flip_y { -1 } else { 1 };
+
+    unsafe {
+        yuv_sys::rs_CopyPlane(
+            src_a.as_ptr(),
+            src_stride_a as i32,
+            dst_a.as_mut_ptr(),
+            dst_stride_a as i32,
+            width as i32,
+            height,
+        )
+    }
+}
+
+pub fn i422_copy(
+    src_y: &[u8],
+    src_stride_y: u32,
+    src_u: &[u8],
+    src_stride_u: u32,
+    src_v: &[u8],
+    src_stride_v: u32,
+    dst_y: &mut [u8],
+    dst_stride_y: u32,
+    dst_u: &mut [u8],
+    dst_stride_u: u32,
+    dst_v: &mut [u8],
+    dst_stride_v: u32,
+    width: u32,
+    height: u32,
+    flip_y: bool,
+) {
+    assert::valid_422(src_y, src_stride_y, src_u, src_stride_u, src_v, src_stride_v, width, height);
+    assert::valid_422(dst_y, dst_stride_y, dst_u, dst_stride_u, dst_v, dst_stride_v, width, height);
+
+    let height = height as i32 * if flip_y { -1 } else { 1 };
+
+    assert!(unsafe {
+        yuv_sys::rs_I422Copy(
+            src_y.as_ptr(),
+            src_stride_y as i32,
+            src_u.as_ptr(),
+            src_stride_u as i32,
+            src_v.as_ptr(),
+            src_stride_v as i32,
+            dst_y.as_mut_ptr(),
+            dst_stride_y as i32,
+            dst_u.as_mut_ptr(),
+            dst_stride_u as i32,
+            dst_v.as_mut_ptr(),
+            dst_stride_v as i32,
+            width as i32,
+            height,
+        ) == 0
+    });
+}
+
+pub fn i444_copy(
+    src_y: &[u8],
+    src_stride_y: u32,
+    src_u: &[u8],
+    src_stride_u: u32,
+    src_v: &[u8],
+    src_stride_v: u32,
+    dst_y: &mut [u8],
+    dst_stride_y: u32,
+    dst_u: &mut [u8],
+    dst_stride_u: u32,
+    dst_v: &mut [u8],
+    dst_stride_v: u32,
+    width: u32,
+    height: u32,
+    flip_y: bool,
+) {
+    assert::valid_444(src_y, src_stride_y, src_u, src_stride_u, src_v, src_stride_v, width, height);
+    assert::valid_444(dst_y, dst_stride_y, dst_u, dst_stride_u, dst_v, dst_stride_v, width, height);
+
+    let height = height as i32 * if flip_y { -1 } else { 1 };
+
+    assert!(unsafe {
+        yuv_sys::rs_I444Copy(
+            src_y.as_ptr(),
+            src_stride_y as i32,
+            src_u.as_ptr(),
+            src_stride_u as i32,
+            src_v.as_ptr(),
+            src_stride_v as i32,
+            dst_y.as_mut_ptr(),
+            dst_stride_y as i32,
+            dst_u.as_mut_ptr(),
+            dst_stride_u as i32,
+            dst_v.as_mut_ptr(),
+            dst_stride_v as i32,
+            width as i32,
+            height,
+        ) == 0
+    });
+}
+
+pub fn i010_copy(
+    src_y: &[u16],
+    src_stride_y: u32,
+    src_u: &[u16],
+    src_stride_u: u32,
+    src_v: &[u16],
+    src_stride_v: u32,
+    dst_y: &mut [u16],
+    dst_stride_y: u32,
+    dst_u: &mut [u16],
+    dst_stride_u: u32,
+    dst_v: &mut [u16],
+    dst_stride_v: u32,
+    width: u32,
+    height: u32,
+    flip_y: bool,
+) {
+    assert::valid_010(src_y, src_stride_y, src_u, src_stride_u, src_v, src_stride_v, width, height);
+    assert::valid_010(dst_y, dst_stride_y, dst_u, dst_stride_u, dst_v, dst_stride_v, width, height);
+
+    let height = height as i32 * if flip_y { -1 } else { 1 };
+
+    assert!(unsafe {
+        yuv_sys::rs_I010Copy(
+            src_y.as_ptr(),
+            src_stride_y as i32,
+            src_u.as_ptr(),
+            src_stride_u as i32,
+            src_v.as_ptr(),
+            src_stride_v as i32,
+            dst_y.as_mut_ptr(),
+            dst_stride_y as i32,
+            dst_u.as_mut_ptr(),
+            dst_stride_u as i32,
+            dst_v.as_mut_ptr(),
+            dst_stride_v as i32,
+            width as i32,
+            height,
+        ) == 0
+    });
+}
+
+pub fn nv12_copy(
+    src_y: &[u8],
+    src_stride_y: u32,
+    src_uv: &[u8],
+    src_stride_uv: u32,
+    dst_y: &mut [u8],
+    dst_stride_y: u32,
+    dst_uv: &mut [u8],
+    dst_stride_uv: u32,
+    width: u32,
+    height: u32,
+    flip_y: bool,
+) {
+    assert::valid_nv12(src_y, src_stride_y, src_uv, src_stride_uv, width, height);
+    assert::valid_nv12(dst_y, dst_stride_y, dst_uv, dst_stride_uv, width, height);
+
+    let height = height as i32 * if flip_y { -1 } else { 1 };
+
+    assert!(
+        unsafe {
+            yuv_sys::rs_NV12Copy(
+                src_y.as_ptr(),
+                src_stride_y as i32,
+                src_uv.as_ptr(),
+                src_stride_uv as i32,
+                dst_y.as_mut_ptr(),
+                dst_stride_y as i32,
+                dst_uv.as_mut_ptr(),
+                dst_stride_uv as i32,
+                width as i32,
+                height,
+            )
+        } == 0
+    );
+}
 
 #[cfg(test)]
 mod tests {
