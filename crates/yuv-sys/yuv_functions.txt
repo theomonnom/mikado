@@ -1,3 +1,8 @@
+NAME##ToYRow_C
+NAME##ToYJRow_C
+NAME##ToUVRow_C
+NAME##ToUVJRow_C
+kYuv##name##Constants
 ScalePlane
 ScalePlane_16
 ScalePlane_12
