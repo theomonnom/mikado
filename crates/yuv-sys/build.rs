@@ -29,8 +29,16 @@ fn rename_symbols(
             continue;
         }
 
+        // Split line using space as delimiter (If there is two words, the second word is the new name instead of using prefix)
+        let split: Vec<&str> = fnc.split_whitespace().collect();
+        let fnc = split[0];
+        let new_name = if split.len() > 1 {
+            split[1].to_owned()
+        } else {
+            format!("{}{}", FNC_PREFIX, fnc)
+        };
+
         let re = Regex::new(&format!(r"\b{}\b", fnc)).unwrap();
-        let new_name = format!("{}{}", FNC_PREFIX, fnc);
 
         for file in include_files.iter().chain(source_files) {
             let path = file.path();
