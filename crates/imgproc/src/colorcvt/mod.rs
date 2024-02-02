@@ -204,6 +204,40 @@ rgba_to_420!(bgra_to_i420, rs_BGRAToI420);
 rgba_to_420!(argb_to_i420, rs_ARGBToI420);
 rgba_to_420!(abgr_to_i420, rs_ABGRToI420);
 
+pub fn raw_to_i420(
+    src_raw: &[u8],
+    src_stride_raw: u32,
+    dst_y: &mut [u8],
+    dst_stride_y: u32,
+    dst_u: &mut [u8],
+    dst_stride_u: u32,
+    dst_v: &mut [u8],
+    dst_stride_v: u32,
+    width: u32,
+    height: u32,
+    flip_y: bool,
+) {
+    assert::valid_rgb(src_raw, src_stride_raw, width, height);
+    assert::valid_420(dst_y, dst_stride_y, dst_u, dst_stride_u, dst_v, dst_stride_v, width, height);
+
+    let height = height as i32 * if flip_y { -1 } else { 1 };
+
+    unsafe {
+        yuv_sys::rs_RAWToI420(
+            src_raw.as_ptr(),
+            src_stride_raw as i32,
+            dst_y.as_mut_ptr(),
+            dst_stride_y as i32,
+            dst_u.as_mut_ptr(),
+            dst_stride_u as i32,
+            dst_v.as_mut_ptr(),
+            dst_stride_v as i32,
+            width as i32,
+            height,
+        )
+    };
+}
+
 pub fn i422_to_i420(
     src_y: &[u8],
     src_stride_y: u32,
