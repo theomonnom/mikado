@@ -1,5 +1,7 @@
 use cc;
+use rayon::prelude::*;
 use regex::Regex;
+use std::borrow::Cow;
 use std::path::Path;
 use std::{env, path::PathBuf};
 use std::{fs, io};
@@ -23,30 +25,35 @@ fn rename_symbols(
 ) {
     // Find all occurences of the function in every header and source files
     // and prefix it with FNC_PREFIX
-    for line in fnc_list {
-        let fnc = line.trim();
-        if fnc.is_empty() {
-            continue;
-        }
+    include_files
+        .par_iter()
+        .chain(source_files)
+        .for_each(|file| {
+            let mut content = fs::read_to_string(&file.path()).unwrap();
+            for line in fnc_list {
+                let fnc = line.trim();
+                if fnc.is_empty() {
+                    continue;
+                }
 
-        // Split line using space as delimiter (If there is two words, the second word is the new name instead of using prefix)
-        let split: Vec<&str> = fnc.split_whitespace().collect();
-        let fnc = split[0];
-        let new_name = if split.len() > 1 {
-            split[1].to_owned()
-        } else {
-            format!("{}{}", FNC_PREFIX, fnc)
-        };
+                // Split line using space as delimiter (If there is two words, the second word is the new name instead of using prefix)
+                let split: Vec<&str> = fnc.split_whitespace().collect();
+                let fnc = split[0];
 
-        let re = Regex::new(&format!(r"\b{}\b", fnc)).unwrap();
+                let new_name = if split.len() > 1 {
+                    split[1].to_owned()
+                } else {
+                    format!("{}{}", FNC_PREFIX, fnc)
+                };
 
-        for file in include_files.iter().chain(source_files) {
-            let path = file.path();
-            let content = fs::read_to_string(&path).unwrap();
-            let new_content = re.replace_all(&content, &new_name);
-            fs::write(&path, new_content.to_string()).unwrap();
-        }
-    }
+                let re = Regex::new(&format!(r"\b{}\b", fnc)).unwrap();
+                if let Cow::Owned(c) = re.replace_all(&content, &new_name) {
+                    content = c
+                }
+            }
+
+            fs::write(&file.path(), content.to_string()).unwrap();
+        });
 }
 
 fn copy_dir(source: impl AsRef<Path>, destination: impl AsRef<Path>) -> io::Result<()> {
