@@ -3,6 +3,7 @@ NAME##ToYJRow_C rs_##NAME##ToYJRow_C
 NAME##ToUVRow_C rs_##NAME##ToUVRow_C
 NAME##ToUVJRow_C rs_##NAME##ToUVJRow_C
 kYuv##name##Constants
+kYvu##name##Constants
 ScalePlane
 ScalePlane_16
 ScalePlane_12
